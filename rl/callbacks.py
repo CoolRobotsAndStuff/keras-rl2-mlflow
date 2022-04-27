@@ -1,3 +1,4 @@
+import mlflow
 import warnings
 import timeit
 import json
@@ -187,6 +188,19 @@ class TrainEpisodeLogger(Callback):
             'action_max': np.max(self.actions[episode]),
             'metrics': metrics_text
         }
+        
+        for key, value in variables.items():
+            if key == 'metrics':
+                pass
+                """
+                f_metrics = {}
+                for idx, name in enumerate(self.metrics_names):
+                    f_metrics[name] = self.metrics[episode]
+                mlflow.log_metrics(f_metrics, step=self.step)
+                """
+            else:
+                mlflow.log_metric(key, value, step=episode)
+
         print(template.format(**variables))
 
         # Free up resources.
